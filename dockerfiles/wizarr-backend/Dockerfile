@@ -51,6 +51,12 @@ RUN tar -xvzf ./wizarr_backend-*.tar.gz -C ./ && \
 # Set directory for Wizarr Backend
 WORKDIR /wizarr
 
+# Create the Wizarr user and group
+RUN groupadd -r wizarr && useradd -r -g wizarr wizarr
+
+# Change ownership of the necessary directories
+RUN chown -R wizarr:wizarr /wizarr /var/lib/nginx /data/database
+
 # Copy Wizarr Backend tmp
 RUN mv ./tmp/wizarr_backend-*/wizarr_backend/* ./
 RUN rm -rf ./tmp
@@ -79,3 +85,6 @@ EXPOSE 5690
 
 # Set Entrypoint
 ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# Run as non-root user
+USER wizarr
