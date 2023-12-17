@@ -11,6 +11,10 @@ RUN apt-get update && \
     curl \
     && apt-get clean
 
+RUN groupadd -r wizarr && useradd -r -g wizarr wizarr
+
+RUN chown -R wizarr:wizarr /wizarr /var/lib/nginx /data/database
+
 # Set directory for Wizarr Frontend
 WORKDIR /wizarr/frontend
 
@@ -55,3 +59,5 @@ EXPOSE 5690
 
 # Set Entrypoint
 ENTRYPOINT ["/docker-entrypoint.sh"]
+
+USER wizarr
