@@ -26,6 +26,9 @@ RUN apt-get update && \
     figlet \
     && apt-get clean
 
+# Create the Wizarr user and group
+RUN groupadd -r wizarr && useradd -r -g wizarr wizarr
+
 # Set directory for Wizarr Frontend
 WORKDIR /wizarr
 
@@ -39,6 +42,9 @@ RUN rm -f /etc/nginx/conf.d/default.conf /etc/nginx/sites-enabled/default
 # Copy Docker Entrypoint
 COPY ../../dockerfiles/wizarr-frontend/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
+
+# Change ownership of the necessary directories
+RUN chown -R wizarr:wizarr /wizarr /var/lib/nginx /data/database
 
 # Copy Bashrc File
 COPY ../../files/.bashrc /root/.bashrc
@@ -55,3 +61,6 @@ EXPOSE 5690
 
 # Set Entrypoint
 ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# Run as non-root user
+USER wizarr
